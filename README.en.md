@@ -33,27 +33,41 @@ An AI agent skill that turns a YouTube link or an audio file into a standard dru
 
 ## Install
 
-You don't need Python or git beforehand. The line below puts the newest release into the skills folder of Claude Code and Codex (`~/.claude/skills`, `~/.codex/skills`, whichever exist) and installs the engine. The engine needs an internet connection and about 3 GB, and takes 5 to 15 minutes.
+You don't need Python or git beforehand. Installing puts the newest release into the skills folder of Claude Code and Codex (`~/.claude/skills`, `~/.codex/skills`, whichever exist) and sets up the transcription engine, which downloads about 3 GB and takes 5 to 15 minutes.
 
-**Windows** (paste into PowerShell)
+**First time (no developer skills needed)**
+
+1. Install [Claude Code](https://claude.com/claude-code) or the [Codex](https://openai.com/codex) app and sign in.
+2. Run the installer.
+   - **Windows:** [download the installer](https://github.com/siru-dduck/drum-transcribe/raw/main/drum-transcribe-installer-windows.zip), unzip it, and double-click `drum-transcribe-installer.cmd` inside.
+     - If a "The publisher could not be verified" window appears, click **Run**.
+     - If a blue "Windows protected your PC" window appears, click **More info**, then **Run anyway**.
+     - A black window shows the progress. Keep it open until it says the install is done.
+   - **macOS:** press ⌘ Space, open "Terminal", paste the line below and press Return.
+
+     ```sh
+     curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
+     ```
+3. Restart Claude Code or Codex.
+4. Say "make a drum score of this song" and give it a YouTube link or an audio file.
+
+**From the command line**
+
+Paste into PowerShell on Windows, or a terminal on macOS and Linux. The installer above does the same.
 
 ```powershell
 irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex
 ```
 
-**macOS, Linux** (paste into a terminal)
-
 ```sh
 curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
 ```
-
-Then restart Claude Code or Codex and say "make a drum score of this song https://youtu.be/...".
 
 The engine goes into `~/.drumcopy` (`%USERPROFILE%\.drumcopy` on Windows): uv, Python 3.11, PyTorch and the analysis models (Demucs, ADTOF, Beat This!), the model weights, and MuseScore 4. MuseScore 4 is only needed for PDF and .mscz; without it, only those two are skipped.
 
 **Let an agent install it**
 
-You can also tell an agent "install the drum-transcribe skill https://github.com/siru-dduck/drum-transcribe"; it should run the line above. Inside Codex's Windows sandbox downloads are blocked (`SEC_E_NO_CREDENTIALS`) and the install fails. Approve running the install command outside the sandbox, or paste the line into PowerShell yourself.
+You can also tell an agent "install the drum-transcribe skill https://github.com/siru-dduck/drum-transcribe"; it should run the line above. Inside Codex's Windows sandbox downloads are blocked (`SEC_E_NO_CREDENTIALS`) and the install fails. Approve running the install command outside the sandbox, or run the installer above yourself.
 
 **Other ways**
 
