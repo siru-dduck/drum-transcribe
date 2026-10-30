@@ -1,5 +1,7 @@
 # drum-transcribe
 
+**한국어** | [English](README.en.md)
+
 유튜브 링크나 음원 파일을 주면 드럼의 **킥, 스네어, 크로스스틱**을 표준 드럼 악보로 만들어 주는 AI 에이전트 스킬입니다. 결과는 PDF, MusicXML, MIDI로 나옵니다. Claude Code나 Codex 같은 에이전트에게 "이 노래 드럼 악보 만들어줘"라고 말하면, 에이전트가 이 스킬의 엔진(drumcopy)을 설치해 실행하고 악보를 검토해서 전달합니다.
 
 ## 할 수 있는 것
@@ -18,7 +20,8 @@
   - 구간을 골라 마디 수와 박자표를 넣습니다.
   - F 키로 마디 첫 박만 탭하면 사이 박은 마디 박자에 맞춰 자동으로 채워집니다.
   - 템포 표기도 이 화면에서 답니다.
-  - 고치면 바로 저장되고 ⌘Z로 되돌립니다.
+  - 고치면 바로 저장되고 ⌘Z(Windows Ctrl+Z)로 되돌립니다.
+  - 처음 열면 단축키와 조작법을 애니메이션으로 보여 주는 안내가 뜹니다. 맥과 Windows 모두에서 동작합니다.
   - 엔진이 확신하지 못한 곳(드럼 없는 전주 등)은 따로 표시합니다.
 - **다른 악보 프로그램으로 보내기:** `drumcopy export`가 여러 곡의 MXL을 곡 이름을 붙여 한 폴더에 모읍니다.
 
@@ -35,6 +38,8 @@ git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-tr
 ```
 
 Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다. 그다음 Claude Code에서 "이 노래 드럼 악보 만들어줘 https://youtu.be/..."라고 말하면 됩니다.
+
+git이 없으면 [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe.zip`을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 `~/.claude/skills/`(Windows는 `%USERPROFILE%\.claude\skills\`) 안에 넣습니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
 
 **Codex 등 다른 에이전트**
 
@@ -64,11 +69,3 @@ Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다.
 - 채보할 음원을 쓸 권리는 사용자에게 있어야 합니다. 이 스킬이 만드는 것은 공부와 연습을 위한 초안 악보이며, 곡에 대한 어떤 권리도 주지 않습니다.
 
 버그나 제안은 Issues에 남겨 주세요.
-
----
-
-### English
-
-An AI agent skill that turns a YouTube link or an audio file into a drum score (kick, snare and cross-stick) as PDF, MusicXML/.mxl (opens in Sibelius, Dorico, Finale, MuseScore), MuseScore and MIDI. Ask Claude Code, Codex or another agent to "transcribe the drums of this song". It installs the engine (no Python needed beforehand), runs it, reviews the score and hands it over. Corrections you give are kept per song, and `drumcopy tune` opens a DAW-style browser editor for bars, beats, meters and tempo marks.
-
-Install for Claude Code: `git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe`. Licensed under PolyForm Noncommercial 1.0.0, free for any non-commercial use. The ADTOF drum model is CC BY-NC-SA 4.0; see THIRD_PARTY_NOTICES.md.
