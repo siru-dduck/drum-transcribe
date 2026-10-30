@@ -2,6 +2,8 @@
 
 **한국어** | [English](README.en.md)
 
+> AI 에이전트에게: 이 저장소는 에이전트 스킬입니다(`SKILL.md`). 설치는 [설치](#설치) 절의 한 줄 명령을 실행하세요. Python이나 `pip` 패키지가 아닙니다.
+
 유튜브 링크나 음원 파일을 주면 드럼의 **킥, 스네어, 크로스스틱**을 표준 드럼 악보로 만들어 주는 AI 에이전트 스킬입니다. 결과는 PDF, MusicXML, MIDI로 나옵니다. Claude Code나 Codex 같은 에이전트에게 "이 노래 드럼 악보 만들어줘"라고 말하면, 에이전트가 이 스킬의 엔진(drumcopy)을 설치해 실행하고 악보를 검토해서 전달합니다.
 
 ![마디·박·템포 편집 화면: 박자 트랙에서 4/4가 12/8로 바뀌고, 템포 트랙에 accel.이 달려 있으며, 원곡 파형 위의 박 선과 킥·크로스스틱 타격이 마디선에 맞춰 보입니다.](images/tune.png)
@@ -31,27 +33,37 @@
 
 ## 설치
 
-Python을 미리 설치할 필요가 없습니다. 처음 쓸 때 에이전트가 `scripts/setup.sh`(macOS·Linux) 또는 `scripts/setup.ps1`(Windows)을 실행해 필요한 것을 모두 받습니다. 인터넷과 약 3GB의 공간이 필요합니다.
+Python도 git도 미리 설치할 필요가 없습니다. 아래 한 줄이 최신 릴리즈를 Claude Code와 Codex의 스킬 폴더(`~/.claude/skills`, `~/.codex/skills` 중 있는 곳)에 넣고, 엔진을 설치합니다. 엔진 설치에는 인터넷과 약 3GB의 공간이 필요하고 5~15분 걸립니다.
 
-받는 것은 Python 3.11, PyTorch와 분석 모델(Demucs, ADTOF, Beat This!), 모델 가중치, MuseScore 4입니다. MuseScore 4는 PDF와 .mscz에만 필요하고, 없으면 그 둘만 빠집니다.
+**Windows** (PowerShell에 붙여 넣기)
 
-**Claude Code**
-
-```sh
-git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe
+```powershell
+irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex
 ```
 
-Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다. 그다음 Claude Code에서 "이 노래 드럼 악보 만들어줘 https://youtu.be/..."라고 말하면 됩니다.
+**macOS · Linux** (터미널에 붙여 넣기)
 
-git이 없으면 [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe-버전.zip`(예: `drum-transcribe-0.1.0.zip`)을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 `~/.claude/skills/`(Windows는 `%USERPROFILE%\.claude\skills\`) 안에 넣습니다. 같은 페이지의 `Source code (zip)`은 GitHub가 자동으로 붙이는 원본 묶음이니 받지 않아도 됩니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
+```sh
+curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
+```
+
+설치가 끝나면 Claude Code나 Codex를 다시 시작하고 "이 노래 드럼 악보 만들어줘 https://youtu.be/..."라고 말하면 됩니다.
+
+엔진은 `~/.drumcopy`(Windows는 `%USERPROFILE%\.drumcopy`)에 설치됩니다. uv, Python 3.11, PyTorch와 분석 모델(Demucs, ADTOF, Beat This!), 모델 가중치, MuseScore 4를 받습니다. MuseScore 4는 PDF와 .mscz에만 필요하고, 없으면 그 둘만 빠집니다.
+
+**에이전트에게 설치 맡기기**
+
+에이전트에게 "drum-transcribe 스킬 설치해줘 https://github.com/siru-dduck/drum-transcribe"라고 말해도 됩니다. 에이전트는 위 한 줄을 실행하면 됩니다. Codex의 Windows 샌드박스 안에서는 인터넷 다운로드가 막혀(`SEC_E_NO_CREDENTIALS`) 설치가 실패합니다. 이때는 설치 명령을 샌드박스 밖에서 실행하도록 승인하거나, 위 한 줄을 PowerShell에 직접 붙여 넣으세요.
+
+**다른 방법**
+
+- git으로: `git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe`(Codex는 `~/.codex/skills/drum-transcribe`). 그다음 에이전트가 처음 쓸 때 `scripts/setup.sh`(Windows는 `scripts\setup.ps1`)로 엔진을 설치합니다.
+- zip으로: [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe-버전.zip`(예: `drum-transcribe-0.2.1.zip`)을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 스킬 폴더 안에 넣습니다. 같은 페이지의 `Source code (zip)`은 GitHub가 자동으로 붙이는 원본 묶음이니 받지 않아도 됩니다.
+- 다른 에이전트: 이 폴더를 받아 두고, 에이전트에게 `SKILL.md`를 읽고 그대로 하라고 알려 주세요. 스킬은 명령줄 도구(`scripts/drumcopy`, Windows는 `scripts\drumcopy.ps1`)만 씁니다.
 
 **업데이트**
 
-새 버전이 나오면 에이전트가 새 요청을 시작할 때 알려 주고 바로 업데이트합니다. GitHub에는 하루에 한 번만 묻고, 곡과 교정 기록은 그대로 남습니다. 묻고 나서 바꾸게 하려면 "자동 업데이트 꺼줘", 직접 바꾸려면 "drum-transcribe 업데이트해줘"라고 말하면 됩니다.
-
-**Codex 등 다른 에이전트**
-
-이 폴더를 받아 두고, 에이전트에게 `SKILL.md`를 읽고 그대로 하라고 알려 주세요. 스킬은 명령줄 도구(`scripts/drumcopy`, Windows는 `scripts\drumcopy.ps1`)만 씁니다.
+새 버전이 나오면 에이전트가 새 요청을 시작할 때 알려 주고 바로 업데이트합니다. GitHub에는 하루에 한 번만 묻고, 곡과 교정 기록은 그대로 남습니다. 묻고 나서 바꾸게 하려면 "자동 업데이트 꺼줘", 직접 바꾸려면 "drum-transcribe 업데이트해줘"라고 말하면 됩니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
 
 ## 이렇게 씁니다
 

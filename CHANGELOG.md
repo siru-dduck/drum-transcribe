@@ -1,5 +1,21 @@
 # 바뀐 내용 (Changelog)
 
+## v0.2.1
+
+- 한 줄 설치: Windows는 `irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex`, macOS·Linux는 `curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh`. Python과 git 없이 최신 릴리즈를 Claude Code와 Codex의 스킬 폴더에 넣고 엔진까지 설치합니다.
+- Windows 설치 고침: 에이전트가 설치 스크립트를 실행하면 Windows PowerShell 5.1이 uv의 진행 메시지를 오류로 바꿔, Python을 받는 단계에서 설치가 멈췄습니다. 이제 종료 코드로 성공 여부를 판단합니다.
+- uv를 `~/.drumcopy/bin`에 직접 받습니다. 셸 설정을 바꾸지 않고, 다운로드가 막히면 BITS로 한 번 더 시도합니다.
+- Codex의 Windows 샌드박스에서 다운로드가 막히면(`SEC_E_NO_CREDENTIALS`) 샌드박스 밖에서 실행하라고 안내합니다.
+- README 맨 위에 에이전트용 안내를 넣었습니다. 에이전트가 이 저장소를 Python 패키지로 착각하지 않게 합니다.
+
+### English
+
+- One-line install: `irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex` on Windows, `curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh` on macOS and Linux. Without Python or git, it puts the newest release into the skills folders of Claude Code and Codex and installs the engine.
+- Windows setup fix: when an agent ran the setup script, Windows PowerShell 5.1 turned uv's progress messages into errors and the setup stopped at the Python download. Exit codes now decide.
+- uv is downloaded straight into `~/.drumcopy/bin`, without changing the shell profile; a blocked download is tried once more with BITS.
+- When Codex's Windows sandbox blocks downloads (`SEC_E_NO_CREDENTIALS`), the scripts say to run them outside the sandbox.
+- A note for AI agents at the top of the READMEs, so they don't take the repository for a Python package.
+
 ## v0.2.0
 
 - 자동 업데이트: 에이전트가 새 요청을 시작할 때 새 버전을 확인하고(하루 한 번), 있으면 알린 뒤 업데이트합니다.

@@ -8,6 +8,6 @@ if (-not (Test-Path $Py)) {
 }
 $env:PYTHONUTF8 = "1"
 $env:DRUMCOPY_SKILL = Split-Path -Parent $PSScriptRoot   # for `drumcopy update`
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }  # no console when an agent runs it
 & $Py -m drumcopy.cli @args
 exit $LASTEXITCODE

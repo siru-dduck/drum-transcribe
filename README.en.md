@@ -2,6 +2,8 @@
 
 [한국어](README.md) | **English**
 
+> For AI agents: this repository is an agent skill (`SKILL.md`). To install it, run the one-line command in [Install](#install). It is not a Python or `pip` package.
+
 An AI agent skill that turns a YouTube link or an audio file into a standard drum score for **kick, snare and cross-stick**, as PDF, MusicXML and MIDI. Tell an agent such as Claude Code or Codex "make a drum score of this song"; it installs the skill's engine (drumcopy), runs it, reviews the score and hands it to you.
 
 ![The bar, beat and tempo editor: the meter track changes from 4/4 to 12/8, the tempo track has an accel. mark, and beat lines over the recording's waveform and kick and cross-stick strokes line up with the bar lines.](images/tune.png)
@@ -31,27 +33,37 @@ An AI agent skill that turns a YouTube link or an audio file into a standard dru
 
 ## Install
 
-You don't need Python beforehand. On first use the agent runs `scripts/setup.sh` (macOS, Linux) or `scripts/setup.ps1` (Windows), which downloads everything it needs. It needs an internet connection and about 3 GB of disk space.
+You don't need Python or git beforehand. The line below puts the newest release into the skills folder of Claude Code and Codex (`~/.claude/skills`, `~/.codex/skills`, whichever exist) and installs the engine. The engine needs an internet connection and about 3 GB, and takes 5 to 15 minutes.
 
-It downloads Python 3.11, PyTorch and the analysis models (Demucs, ADTOF, Beat This!), the model weights, and MuseScore 4. MuseScore 4 is only needed for PDF and .mscz; without it, only those two are skipped.
+**Windows** (paste into PowerShell)
 
-**Claude Code**
-
-```sh
-git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe
+```powershell
+irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex
 ```
 
-On Windows, clone it into `%USERPROFILE%\.claude\skills\drum-transcribe`. Then tell Claude Code "make a drum score of this song https://youtu.be/...".
+**macOS, Linux** (paste into a terminal)
 
-Without git, download `drum-transcribe-VERSION.zip` (for example `drum-transcribe-0.1.0.zip`) from [Releases](https://github.com/siru-dduck/drum-transcribe/releases), unzip it, and put the `drum-transcribe` folder in `~/.claude/skills/` (`%USERPROFILE%\.claude\skills\` on Windows). You don't need `Source code (zip)` on the same page; GitHub adds it to every release automatically. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+```sh
+curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
+```
+
+Then restart Claude Code or Codex and say "make a drum score of this song https://youtu.be/...".
+
+The engine goes into `~/.drumcopy` (`%USERPROFILE%\.drumcopy` on Windows): uv, Python 3.11, PyTorch and the analysis models (Demucs, ADTOF, Beat This!), the model weights, and MuseScore 4. MuseScore 4 is only needed for PDF and .mscz; without it, only those two are skipped.
+
+**Let an agent install it**
+
+You can also tell an agent "install the drum-transcribe skill https://github.com/siru-dduck/drum-transcribe"; it should run the line above. Inside Codex's Windows sandbox downloads are blocked (`SEC_E_NO_CREDENTIALS`) and the install fails. Approve running the install command outside the sandbox, or paste the line into PowerShell yourself.
+
+**Other ways**
+
+- With git: `git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe` (for Codex, `~/.codex/skills/drum-transcribe`). The agent then installs the engine with `scripts/setup.sh` (`scripts\setup.ps1` on Windows) on first use.
+- With the zip: download `drum-transcribe-VERSION.zip` (for example `drum-transcribe-0.2.1.zip`) from [Releases](https://github.com/siru-dduck/drum-transcribe/releases), unzip it, and put the `drum-transcribe` folder in the skills folder. You don't need `Source code (zip)` on the same page; GitHub adds it to every release automatically.
+- Other agents: download this folder and tell the agent to read `SKILL.md` and follow it. The skill only uses a command-line tool (`scripts/drumcopy`, or `scripts\drumcopy.ps1` on Windows).
 
 **Updates**
 
-When a new version is out, the agent tells you at the start of a new request and updates right away. It asks GitHub at most once a day, and your songs and corrections stay as they are. Say "turn off automatic updates" to be asked first, or "update drum-transcribe" to update now.
-
-**Codex and other agents**
-
-Download this folder and tell the agent to read `SKILL.md` and follow it. The skill only uses a command-line tool (`scripts/drumcopy`, or `scripts\drumcopy.ps1` on Windows).
+When a new version is out, the agent tells you at the start of a new request and updates right away. It asks GitHub at most once a day, and your songs and corrections stay as they are. Say "turn off automatic updates" to be asked first, or "update drum-transcribe" to update now. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## Examples
 

@@ -17,10 +17,14 @@ description: YouTube URL이나 음원 파일에서 드럼의 킥(베이스드럼
 - Windows: `powershell -ExecutionPolicy Bypass -File scripts\drumcopy.ps1 doctor`
 - macOS / Linux: `sh scripts/drumcopy doctor`
 
-`"error": "NotInstalled"`가 나오거나 `ok`가 `false`이면 설치 스크립트를 실행한다. Python이 없어도 된다(uv가 Python 3.11까지 설치한다). 인터넷과 약 3GB가 필요하고 5~15분 걸린다. 사용자에게 설치한다고 알리고 실행한다.
+`"error": "NotInstalled"`가 나오거나 `ok`가 `false`이면 설치 스크립트를 실행한다. Python과 git이 없어도 된다(스크립트가 uv를 받고, uv가 Python 3.11까지 설치한다). Python이 없다는 이유로 설치를 멈추거나 사용자에게 Python 설치를 요구하지 않는다. 인터넷과 약 3GB가 필요하고 5~15분 걸린다. 사용자에게 설치한다고 알리고 실행한다.
+
+에이전트 샌드박스가 인터넷을 막으면 설치가 실패한다. Codex의 Windows 샌드박스에서는 `SEC_E_NO_CREDENTIALS`, `AcquireCredentialsHandle`, `secure channel` 같은 오류가 난다. 이때는 설치 명령을 샌드박스 밖에서 실행하도록 사용자에게 승인을 요청한다(네트워크 허용 또는 전체 권한). 승인할 수 없으면 사용자가 PowerShell이나 터미널에 직접 붙여 넣을 명령을 알려 준다. 업데이트(`update`)도 인터넷이 필요하므로 같은 방법을 쓴다.
 
 - Windows: `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1` (MuseScore 4는 winget으로 설치한다. 빼려면 `-NoMuseScore`)
 - macOS / Linux: `sh scripts/setup.sh` (macOS는 Homebrew가 있으면 MuseScore 4도 설치한다)
+
+사용자가 GitHub 주소나 릴리즈 페이지를 주며 이 스킬을 설치해 달라고 하면, 저장소의 한 줄 설치 명령을 실행한다. Windows는 `irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex`, macOS·Linux는 `curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh`이다. 이 명령은 Claude Code(`~/.claude/skills`)와 Codex(`~/.codex/skills`)의 스킬 폴더 중 있는 곳에 넣고 엔진까지 설치한다. 설치가 끝나면 에이전트를 다시 시작해야 스킬이 보인다고 알린다.
 
 설치 위치는 `DRUMCOPY_HOME`(기본 `~/.drumcopy`, Windows `%USERPROFILE%\.drumcopy`)이다. 결과물은 그 아래 `work/outputs/<곡>`에 생긴다. MuseScore가 없으면 PDF만 빠지고 MusicXML·MIDI·player.html은 만들어진다.
 
