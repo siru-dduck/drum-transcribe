@@ -4,6 +4,10 @@
 
 유튜브 링크나 음원 파일을 주면 드럼의 **킥, 스네어, 크로스스틱**을 표준 드럼 악보로 만들어 주는 AI 에이전트 스킬입니다. 결과는 PDF, MusicXML, MIDI로 나옵니다. Claude Code나 Codex 같은 에이전트에게 "이 노래 드럼 악보 만들어줘"라고 말하면, 에이전트가 이 스킬의 엔진(drumcopy)을 설치해 실행하고 악보를 검토해서 전달합니다.
 
+![마디·박·템포 편집 화면: 박자 트랙에서 4/4가 12/8로 바뀌고, 템포 트랙에 accel.이 달려 있으며, 원곡 파형 위의 박 선과 킥·크로스스틱 타격이 마디선에 맞춰 보입니다.](images/tune.png)
+
+*마디·박·템포 편집 화면(`drumcopy tune`). 클릭을 들으며 박 선과 마디선을 끌어 맞추고, 박자표와 템포 표기를 답니다.*
+
 ## 할 수 있는 것
 
 - **킥·스네어·크로스스틱 채보:** 드럼 소리를 분리하고 타격을 찾아 박에 맞춰 적습니다. 고스트 노트는 기본으로 뺍니다.
@@ -39,7 +43,7 @@ git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-tr
 
 Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다. 그다음 Claude Code에서 "이 노래 드럼 악보 만들어줘 https://youtu.be/..."라고 말하면 됩니다.
 
-git이 없으면 [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe.zip`을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 `~/.claude/skills/`(Windows는 `%USERPROFILE%\.claude\skills\`) 안에 넣습니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
+git이 없으면 [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe-버전.zip`(예: `drum-transcribe-0.1.0.zip`)을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 `~/.claude/skills/`(Windows는 `%USERPROFILE%\.claude\skills\`) 안에 넣습니다. 같은 페이지의 `Source code (zip)`은 GitHub가 자동으로 붙이는 원본 묶음이니 받지 않아도 됩니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
 
 **Codex 등 다른 에이전트**
 
