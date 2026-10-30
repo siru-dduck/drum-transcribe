@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drumcopy"
+version = "0.1.0"
+description = "Audio (YouTube, files) to standard drum notation, built for AI agents"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy",
+    "soundfile",
+    "pretty_midi",
+]
+
+[project.optional-dependencies]
+engine = [
+    "torch==2.11.0",
+    "torchaudio==2.11.0",
+    "demucs==4.0.1",
+    "librosa",
+    "einops",
+    "rotary-embedding-torch",
+]
+
+[project.scripts]
+drumcopy = "drumcopy.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+drumcopy = ["*.mss", "*.html"]

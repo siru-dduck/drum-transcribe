@@ -1,0 +1,74 @@
+# drum-transcribe
+
+유튜브 링크나 음원 파일을 주면 드럼의 **킥, 스네어, 크로스스틱**을 표준 드럼 악보로 만들어 주는 AI 에이전트 스킬입니다. 결과는 PDF, MusicXML, MIDI로 나옵니다. Claude Code나 Codex 같은 에이전트에게 "이 노래 드럼 악보 만들어줘"라고 말하면, 에이전트가 이 스킬의 엔진(drumcopy)을 설치해 실행하고 악보를 검토해서 전달합니다.
+
+## 할 수 있는 것
+
+- **킥·스네어·크로스스틱 채보:** 드럼 소리를 분리하고 타격을 찾아 박에 맞춰 적습니다. 고스트 노트는 기본으로 뺍니다.
+- **박자와 템포:** 6/4, 12/8, 3/4 같은 박자표 변화와 rit., accel., rubato 같은 템포 표기를 적습니다. 1마디는 음악이 시작하는 곳이고, 드럼이 쉬는 구간은 여러 마디 쉼표로 묶습니다.
+- **결과물:**
+  - PDF: MuseScore 4로 판각합니다.
+  - MusicXML과 압축 MusicXML(.mxl): 시벨리우스, Dorico, Finale, MuseScore에서 바로 엽니다.
+  - MuseScore 원본(.mscz)
+  - MIDI: 원음 시간에 맞춥니다.
+  - `player.html`: 원음과 악보를 함께 재생합니다.
+- **곡에 맞춰 고치기:** 자동 채보는 초안입니다. "25마디부터 크로스스틱이야", "58마디 스네어 빼줘"처럼 말하면 에이전트가 그 곡의 교정으로 저장합니다. 다시 채보해도 고친 곳은 유지되고, 비슷한 소리가 나는 곳을 찾아 물어봅니다.
+- **마디·박·템포 편집 화면:** `drumcopy tune`이 로직(Logic Pro) 편곡 창처럼 생긴 편집 화면을 브라우저에 엽니다.
+  - 메트로놈 클릭을 들으며 박 선이나 마디선을 끌어 맞춥니다.
+  - 구간을 골라 마디 수와 박자표를 넣습니다.
+  - F 키로 마디 첫 박만 탭하면 사이 박은 마디 박자에 맞춰 자동으로 채워집니다.
+  - 템포 표기도 이 화면에서 답니다.
+  - 고치면 바로 저장되고 ⌘Z로 되돌립니다.
+  - 엔진이 확신하지 못한 곳(드럼 없는 전주 등)은 따로 표시합니다.
+- **다른 악보 프로그램으로 보내기:** `drumcopy export`가 여러 곡의 MXL을 곡 이름을 붙여 한 폴더에 모읍니다.
+
+## 설치
+
+Python을 미리 설치할 필요가 없습니다. 처음 쓸 때 에이전트가 `scripts/setup.sh`(macOS·Linux) 또는 `scripts/setup.ps1`(Windows)을 실행해 필요한 것을 모두 받습니다. 인터넷과 약 3GB의 공간이 필요합니다.
+
+받는 것은 Python 3.11, PyTorch와 분석 모델(Demucs, ADTOF, Beat This!), 모델 가중치, MuseScore 4입니다. MuseScore 4는 PDF와 .mscz에만 필요하고, 없으면 그 둘만 빠집니다.
+
+**Claude Code**
+
+```sh
+git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe
+```
+
+Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다. 그다음 Claude Code에서 "이 노래 드럼 악보 만들어줘 https://youtu.be/..."라고 말하면 됩니다.
+
+**Codex 등 다른 에이전트**
+
+이 폴더를 받아 두고, 에이전트에게 `SKILL.md`를 읽고 그대로 하라고 알려 주세요. 스킬은 명령줄 도구(`scripts/drumcopy`, Windows는 `scripts\drumcopy.ps1`)만 씁니다.
+
+## 이렇게 씁니다
+
+```text
+이 노래 드럼 악보 만들어줘 https://youtu.be/XXXXXXXX
+킥이랑 스네어만 뽑아줘 (파일: ~/Music/song.wav)
+60마디부터 2·4박은 크로스스틱이야
+마디랑 템포를 화면에서 고칠래
+시벨리우스에서 열 수 있게 MXL로 만들어줘
+```
+
+## 한계
+
+- 한 번에 100% 맞지 않습니다. 드럼 소리가 흐린 녹음, 드럼이 없는 긴 전주, 루바토 구간은 특히 그렇습니다. 그래서 고치는 흐름(교정 저장, 비슷한 곳 제안, 편집 화면)을 함께 둡니다.
+- 지금은 킥, 스네어, 크로스스틱에 집중합니다. 하이햇, 탐, 심벌은 분석에는 쓰지만 악보에는 적지 않습니다.
+- 처음 채보는 곡당 1~3분, 같은 곡을 다시 만들 때는 몇 초가 걸립니다. GPU 없이도 동작합니다.
+- 시벨리우스 전용 파일(.sib)은 시벨리우스만 만들 수 있습니다. 대신 시벨리우스에서 바로 열리는 .mxl을 만듭니다.
+
+## 라이선스
+
+- 이 저장소의 코드는 [PolyForm Noncommercial 1.0.0](LICENSE)을 따릅니다. 개인 연습, 교회·학교·동호회, 연구처럼 **비상업적 목적이라면 누구나** 자유롭게 쓰고, 고치고, 나눌 수 있습니다. 유료 서비스나 판매용 악보 제작 같은 상업적 사용은 허용하지 않습니다.
+- 드럼 검출 모델 [ADTOF](https://github.com/MZehren/ADTOF)도 비상업 라이선스(CC BY-NC-SA 4.0)입니다. 함께 쓰는 다른 프로젝트와 각 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다.
+- 채보할 음원을 쓸 권리는 사용자에게 있어야 합니다. 이 스킬이 만드는 것은 공부와 연습을 위한 초안 악보이며, 곡에 대한 어떤 권리도 주지 않습니다.
+
+버그나 제안은 Issues에 남겨 주세요.
+
+---
+
+### English
+
+An AI agent skill that turns a YouTube link or an audio file into a drum score (kick, snare and cross-stick) as PDF, MusicXML/.mxl (opens in Sibelius, Dorico, Finale, MuseScore), MuseScore and MIDI. Ask Claude Code, Codex or another agent to "transcribe the drums of this song". It installs the engine (no Python needed beforehand), runs it, reviews the score and hands it over. Corrections you give are kept per song, and `drumcopy tune` opens a DAW-style browser editor for bars, beats, meters and tempo marks.
+
+Install for Claude Code: `git clone https://github.com/siru-dduck/drum-transcribe ~/.claude/skills/drum-transcribe`. Licensed under PolyForm Noncommercial 1.0.0, free for any non-commercial use. The ADTOF drum model is CC BY-NC-SA 4.0; see THIRD_PARTY_NOTICES.md.

@@ -1,0 +1,18 @@
+#!/bin/sh
+# drumcopy CLI for macOS / Linux: runs the installed engine with all arguments passed on.
+#   sh scripts/drumcopy transcribe <url|file> --parts kick,snare
+# Engine: $DRUMCOPY_PYTHON, else the development checkout this skill lives in, else setup.sh's.
+SKILL="$(cd "$(dirname "$0")/.." && pwd)"
+CHECKOUT="$(cd "$SKILL/../../.." 2>/dev/null && pwd)"
+if [ -n "$DRUMCOPY_PYTHON" ]; then
+    PY="$DRUMCOPY_PYTHON"
+elif [ -x "$CHECKOUT/.venvs/engine/bin/python" ] && [ -f "$CHECKOUT/src/drumcopy/cli.py" ]; then
+    PY="$CHECKOUT/.venvs/engine/bin/python"
+else
+    PY="${DRUMCOPY_HOME:-$HOME/.drumcopy}/venv/bin/python"
+fi
+if [ ! -x "$PY" ]; then
+    echo '{"error": "NotInstalled", "message": "drumcopy engine not installed: run sh scripts/setup.sh"}'
+    exit 2
+fi
+exec "$PY" -m drumcopy.cli "$@"
