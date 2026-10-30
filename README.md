@@ -38,12 +38,13 @@ Python도 git도 미리 설치할 필요가 없습니다. 설치하면 최신 �
 **처음 쓰는 분 (개발자가 아니어도 됩니다)**
 
 1. [Claude Code](https://claude.com/claude-code)나 [Codex](https://openai.com/codex) 앱을 설치하고 로그인합니다.
-2. 설치 파일을 실행합니다.
-   - **Windows:** [설치 파일 받기](https://github.com/siru-dduck/drum-transcribe/raw/main/drum-transcribe-installer-windows.zip)를 눌러 zip을 받고 압축을 풉니다. 안에 있는 `drum-transcribe-installer.cmd`를 더블클릭합니다.
-     - "게시자를 확인할 수 없습니다" 창이 뜨면 **실행**을 누릅니다.
-     - 파란 "Windows의 PC 보호" 창이 뜨면 **추가 정보**를 누른 뒤 **실행**을 누릅니다.
-     - 검은 창에 진행 상황이 나옵니다. "설치가 끝났습니다"가 나올 때까지 창을 닫지 마세요.
-   - **macOS:** ⌘ Space를 눌러 "터미널"을 열고, 아래 한 줄을 붙여 넣은 뒤 Return을 누릅니다.
+2. 설치 명령을 붙여 넣습니다.
+   - **Windows:** 시작 메뉴에서 "PowerShell"을 검색해 엽니다. 아래 한 줄을 붙여 넣고 Enter를 누릅니다. 진행 상황이 나오고, 마지막에 `Done.`이 나올 때까지 창을 닫지 마세요.
+
+     ```powershell
+     irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex
+     ```
+   - **macOS:** ⌘ Space를 눌러 "터미널"을 열고, 아래 한 줄을 붙여 넣은 뒤 Return을 누릅니다. Linux도 터미널에 같은 한 줄을 붙여 넣습니다.
 
      ```sh
      curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
@@ -51,23 +52,21 @@ Python도 git도 미리 설치할 필요가 없습니다. 설치하면 최신 �
 3. Claude Code나 Codex를 다시 시작합니다.
 4. "이 노래 드럼 악보 만들어줘"라고 말하고 유튜브 링크나 음원 파일을 줍니다.
 
-**명령어로 설치**
-
-Windows는 PowerShell에, macOS·Linux는 터미널에 붙여 넣습니다. 위 설치 파일도 같은 일을 합니다.
-
-```powershell
-irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex
-```
-
-```sh
-curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh
-```
-
 엔진은 `~/.drumcopy`(Windows는 `%USERPROFILE%\.drumcopy`)에 설치됩니다. uv, Python 3.11, PyTorch와 분석 모델(Demucs, ADTOF, Beat This!), 모델 가중치, MuseScore 4를 받습니다. MuseScore 4는 PDF와 .mscz에만 필요하고, 없으면 그 둘만 빠집니다.
 
 **에이전트에게 설치 맡기기**
 
-에이전트에게 "drum-transcribe 스킬 설치해줘 https://github.com/siru-dduck/drum-transcribe"라고 말해도 됩니다. 에이전트는 위 한 줄을 실행하면 됩니다. Codex의 Windows 샌드박스 안에서는 인터넷 다운로드가 막혀(`SEC_E_NO_CREDENTIALS`) 설치가 실패합니다. 이때는 설치 명령을 샌드박스 밖에서 실행하도록 승인하거나, 위 설치 파일을 직접 실행하세요.
+에이전트에게 "drum-transcribe 스킬 설치해줘 https://github.com/siru-dduck/drum-transcribe"라고 말해도 됩니다. 에이전트는 위 한 줄을 실행하면 됩니다. Codex의 Windows 샌드박스 안에서는 인터넷 다운로드가 막혀(`SEC_E_NO_CREDENTIALS`) 설치가 실패합니다. 이때는 설치 명령을 샌드박스 밖에서 실행하도록 승인하거나, 위 한 줄을 PowerShell에 직접 붙여 넣으세요.
+
+**Codex에서 쓸 때**
+
+Codex는 기본 샌드박스에서 작업 폴더 밖에 파일을 쓰거나 인터넷을 쓰지 못하게 막습니다. drumcopy는 결과를 `~/.drumcopy`에 쓰고 유튜브 음원을 받으므로, 채보할 때 Codex가 권한을 물으면 허용해 주세요. 매번 묻지 않게 하려면 Codex 설정 파일(`~/.codex/config.toml`, Windows는 `%USERPROFILE%\.codex\config.toml`)에 아래를 넣고 Codex를 다시 시작합니다. 엔진 폴더 쓰기와 인터넷만 열고, 나머지 샌드박스는 그대로 둡니다.
+
+```toml
+[sandbox_workspace_write]
+writable_roots = ['C:\Users\이름\.drumcopy']   # macOS·Linux는 '/Users/이름/.drumcopy' 처럼
+network_access = true
+```
 
 **다른 방법**
 

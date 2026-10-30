@@ -21,6 +21,18 @@ description: YouTube URL이나 음원 파일에서 드럼의 킥(베이스드럼
 
 에이전트 샌드박스가 인터넷을 막으면 설치가 실패한다. Codex의 Windows 샌드박스에서는 `SEC_E_NO_CREDENTIALS`, `AcquireCredentialsHandle`, `secure channel` 같은 오류가 난다. 이때는 설치 명령을 샌드박스 밖에서 실행하도록 사용자에게 승인을 요청한다(네트워크 허용 또는 전체 권한). 승인할 수 없으면 사용자가 PowerShell이나 터미널에 직접 붙여 넣을 명령을 알려 준다. 업데이트(`update`)도 인터넷이 필요하므로 같은 방법을 쓴다.
 
+샌드박스가 있는 에이전트(Codex 등)에서는 채보도 막힐 수 있다. drumcopy는 `DRUMCOPY_HOME`에 결과와 캐시를 쓰고 유튜브 음원과 모델을 내려받는데, 기본 샌드박스는 작업 폴더 밖 쓰기와 인터넷을 막는다.
+- `permission denied (os error 5)`, `Access is denied`, `PermissionError`, `Read-only file system` 같은 오류가 나면 같은 명령을 샌드박스 밖에서 실행하도록 권한 상승(승인)을 요청한다.
+- `uv trampoline failed to spawn Python child process`는 v0.2.2 이전에 설치한 Windows 엔진에서 난다(Python 본체가 AppData에 있어 샌드박스가 실행하지 못함). 사용자에게 설치 파일을 한 번 더 실행해 달라고 한다. 엔진이 `DRUMCOPY_HOME` 안의 Python으로 옮겨진다.
+- 사용자가 매번 승인하기 번거로워하면 Codex 설정 파일(`~/.codex/config.toml`, Windows는 `%USERPROFILE%\.codex\config.toml`)에 아래를 넣고 Codex를 다시 시작하라고 안내한다. `doctor`의 `home` 값을 경로에 넣는다. 이 설정은 엔진 폴더 쓰기와 인터넷만 열고 나머지 샌드박스는 그대로 둔다.
+
+  ```toml
+  [sandbox_workspace_write]
+  writable_roots = ['C:\Users\이름\.drumcopy']
+  network_access = true
+  ```
+- 그래도 막히면 이 작업 동안만 Codex 권한을 '전체 액세스(Full access)'로 바꾸라고 안내한다.
+
 - Windows: `powershell -ExecutionPolicy Bypass -File scripts\setup.ps1` (MuseScore 4는 winget으로 설치한다. 빼려면 `-NoMuseScore`)
 - macOS / Linux: `sh scripts/setup.sh` (macOS는 Homebrew가 있으면 MuseScore 4도 설치한다)
 

@@ -9,6 +9,7 @@ SKILL="$(cd "$(dirname "$0")/.." && pwd)"
 ENGINE="$SKILL/engine"
 HOME_DIR="${DRUMCOPY_HOME:-$HOME/.drumcopy}"
 VENV="$HOME_DIR/venv"
+PYTHONS="$HOME_DIR/python"
 PY="$VENV/bin/python"
 [ -f "$ENGINE/pyproject.toml" ] || { echo "engine folder not found next to this script: $ENGINE" >&2; exit 1; }
 mkdir -p "$HOME_DIR"
@@ -36,8 +37,15 @@ fi
 echo "uv: $UV"
 
 echo "[2/5] Python 3.11 and the virtual environment ($VENV)"
+# Python itself lives in $HOME_DIR too, as on Windows (where an agent's sandbox cannot start
+# it from uv's default place): one folder holds the whole engine.
+export UV_PYTHON_INSTALL_DIR="$PYTHONS" UV_PYTHON_BIN_DIR="$PYTHONS/bin"
 "$UV" python install 3.11
-[ -x "$PY" ] || "$UV" venv --python 3.11 "$VENV"
+if [ -f "$VENV/pyvenv.cfg" ] && ! grep -qF "$PYTHONS" "$VENV/pyvenv.cfg"; then
+    echo "moving the engine onto the Python in $PYTHONS (packages come again from uv's cache)"
+    rm -rf "$VENV"
+fi
+[ -x "$PY" ] || "$UV" venv --python 3.11 --python-preference only-managed "$VENV"
 
 echo "[3/5] engine packages (PyTorch, Demucs, ADTOF, Beat This!)"
 # ADTOF-pytorch (drum detection) comes from its author's repository, at the commit drumcopy was tested with.

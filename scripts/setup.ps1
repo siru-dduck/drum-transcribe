@@ -17,6 +17,7 @@ $DataHome = if ($env:DRUMCOPY_HOME) { $env:DRUMCOPY_HOME } else { Join-Path $env
 $Venv = Join-Path $DataHome "venv"
 $Py = Join-Path $Venv "Scripts\python.exe"
 $Bin = Join-Path $DataHome "bin"
+$PythonDir = Join-Path $DataHome "python"
 if (-not (Test-Path (Join-Path $Engine "pyproject.toml"))) { throw "engine folder not found next to this script: $Engine" }
 New-Item -ItemType Directory -Force -Path $Bin | Out-Null
 
@@ -63,8 +64,18 @@ if (-not $Uv) {
 Write-Host "uv: $Uv"
 
 Write-Host "[2/5] Python 3.11 and the virtual environment ($Venv)"
+# Python itself lives in DataHome too, not in AppData where uv puts it by default: an agent's
+# Windows sandbox (Codex) cannot start programs under AppData, and the venv's python.exe only
+# starts that Python ("uv trampoline failed to spawn Python child process", os error 5).
+$env:UV_PYTHON_INSTALL_DIR = $PythonDir
+$env:UV_PYTHON_BIN_DIR = Join-Path $PythonDir "bin"
 Invoke-Native $Uv @("python", "install", "3.11")
-if (-not (Test-Path $Py)) { Invoke-Native $Uv @("venv", "--python", "3.11", $Venv) }
+$cfg = Join-Path $Venv "pyvenv.cfg"
+if ((Test-Path $cfg) -and -not ((Get-Content $cfg) -match [regex]::Escape($PythonDir))) {
+    Write-Host "Moving the engine onto the Python in $PythonDir (packages come again from uv's cache)"
+    Remove-Item $Venv -Recurse -Force
+}
+if (-not (Test-Path $Py)) { Invoke-Native $Uv @("venv", "--python", "3.11", "--python-preference", "only-managed", $Venv) }
 
 Write-Host "[3/5] engine packages (PyTorch CPU, Demucs, ADTOF, Beat This!)"
 $EngineUri = ([System.Uri]$Engine).AbsoluteUri

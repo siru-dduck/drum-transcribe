@@ -1,5 +1,15 @@
 # 바뀐 내용 (Changelog)
 
+## v0.2.2
+
+- Codex(Windows)에서 채보가 시작되지 않던 문제를 고쳤습니다. uv가 Python 본체를 AppData에 두는데 Codex 샌드박스는 AppData의 프로그램을 실행하지 못해, `uv trampoline failed to spawn Python child process (os error 5)`가 났습니다. 이제 Python도 `~/.drumcopy/python`에 설치합니다. 이미 설치한 PC는 설치 명령을 한 번 더 실행하면 엔진이 옮겨집니다.
+- README와 SKILL.md에 Codex 샌드박스 안내를 넣었습니다. 엔진 폴더 쓰기와 인터넷만 여는 `config.toml` 설정을 적었습니다.
+
+### English
+
+- Fixed transcription not starting in Codex on Windows. uv keeps Python itself in AppData, and Codex's sandbox cannot start programs there, so the engine failed with `uv trampoline failed to spawn Python child process (os error 5)`. Python now goes into `~/.drumcopy/python` as well. On a PC that already has the engine, run the install command once more to move it.
+- READMEs and SKILL.md explain Codex's sandbox, with a `config.toml` setting that opens only the engine folder and the internet.
+
 ## v0.2.1
 
 - 한 줄 설치: Windows는 `irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex`, macOS·Linux는 `curl -LsSf https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.sh | sh`. Python과 git 없이 최신 릴리즈를 Claude Code와 Codex의 스킬 폴더에 넣고 엔진까지 설치합니다.

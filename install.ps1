@@ -25,7 +25,7 @@ param([string]$To, [switch]$NoSetup)
         catch {
             $hint = ""
             if ($first -match "SEC_E_NO_CREDENTIALS|AcquireCredentialsHandle|secure channel|SSL/TLS") {
-                $hint = "`nThe download is blocked inside the agent's sandbox. Run the installer outside the sandbox " +
+                $hint = "`nThe download is blocked inside the agent's sandbox. Run the install command outside the sandbox " +
                         "(approve network / full access for it), or paste this into PowerShell yourself:`n" +
                         "  irm https://raw.githubusercontent.com/$Repo/main/install.ps1 | iex"
             }
