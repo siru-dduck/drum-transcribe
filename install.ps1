@@ -81,9 +81,11 @@ param([string]$To, [switch]$NoSetup)
 
     if ($installed -and -not $NoSetup) {
         Write-Host "Setting up the engine (Python, PyTorch, models; about 3 GB, 5 to 15 minutes)"
+        # Its output goes straight to this window: read back through a pipe, Korean text (a user
+        # name in a path) came out garbled.
         $saved = $ErrorActionPreference
         $ErrorActionPreference = "Continue"  # progress on stderr is not an error (Windows PowerShell 5.1)
-        try { & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $installed "scripts\setup.ps1") 2>&1 | ForEach-Object { Write-Host "$_" } }
+        try { & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $installed "scripts\setup.ps1") }
         finally { $ErrorActionPreference = $saved }
         if ($LASTEXITCODE -ne 0) {
             throw "engine setup failed; run it again: powershell -ExecutionPolicy Bypass -File `"$installed\scripts\setup.ps1`""

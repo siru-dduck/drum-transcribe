@@ -39,7 +39,7 @@ echo "uv: $UV"
 echo "[2/5] Python 3.11 and the virtual environment ($VENV)"
 # Python itself lives in $HOME_DIR too, as on Windows (where an agent's sandbox cannot start
 # it from uv's default place): one folder holds the whole engine.
-export UV_PYTHON_INSTALL_DIR="$PYTHONS" UV_PYTHON_BIN_DIR="$PYTHONS/bin"
+export UV_PYTHON_INSTALL_DIR="$PYTHONS" UV_PYTHON_BIN_DIR="$PYTHONS/bin" UV_PYTHON_INSTALL_BIN=0
 "$UV" python install 3.11
 if [ -f "$VENV/pyvenv.cfg" ] && ! grep -qF "$PYTHONS" "$VENV/pyvenv.cfg"; then
     echo "moving the engine onto the Python in $PYTHONS (packages come again from uv's cache)"
@@ -51,8 +51,10 @@ echo "[3/5] engine packages (PyTorch, Demucs, ADTOF, Beat This!)"
 # ADTOF-pytorch (drum detection) comes from its author's repository, at the commit drumcopy was tested with.
 ADTOF="adtof-pytorch @ https://github.com/xavriley/ADTOF-pytorch/archive/85c192e78f716ea0b111cc8a5ee4a8f6a3a4f8a9.zip"
 # --reinstall-package: after an update the engine folder changed but may keep its path.
-"$UV" pip install --python "$PY" --reinstall-package drumcopy "drumcopy[engine] @ file://$ENGINE" "$ADTOF" "$ENGINE/vendor/beat_this" \
-    yt-dlp imageio-ffmpeg
+# yt-dlp is brought up to date on every run (YouTube changes often); deno is the JavaScript
+# runtime it needs for YouTube's challenges, found by yt-dlp inside the environment.
+"$UV" pip install --python "$PY" --reinstall-package drumcopy --upgrade-package yt-dlp --upgrade-package yt-dlp-ejs \
+    "drumcopy[engine] @ file://$ENGINE" "$ADTOF" "$ENGINE/vendor/beat_this" "yt-dlp[default]" deno imageio-ffmpeg
 
 echo "[4/5] MuseScore 4 (PDF)"
 if [ "$1" != "--no-musescore" ] && [ -z "$DRUMCOPY_MUSESCORE" ] && ! command -v mscore >/dev/null 2>&1 \

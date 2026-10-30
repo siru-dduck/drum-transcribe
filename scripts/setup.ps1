@@ -69,6 +69,7 @@ Write-Host "[2/5] Python 3.11 and the virtual environment ($Venv)"
 # starts that Python ("uv trampoline failed to spawn Python child process", os error 5).
 $env:UV_PYTHON_INSTALL_DIR = $PythonDir
 $env:UV_PYTHON_BIN_DIR = Join-Path $PythonDir "bin"
+$env:UV_PYTHON_INSTALL_BIN = "0"  # no python3.11.exe on PATH: the engine does not need one
 Invoke-Native $Uv @("python", "install", "3.11")
 $cfg = Join-Path $Venv "pyvenv.cfg"
 if ((Test-Path $cfg) -and -not ((Get-Content $cfg) -match [regex]::Escape($PythonDir))) {
@@ -82,8 +83,11 @@ $EngineUri = ([System.Uri]$Engine).AbsoluteUri
 # ADTOF-pytorch (drum detection) comes from its author's repository, at the commit drumcopy was tested with.
 $Adtof = "adtof-pytorch @ https://github.com/xavriley/ADTOF-pytorch/archive/85c192e78f716ea0b111cc8a5ee4a8f6a3a4f8a9.zip"
 # --reinstall-package: after an update the engine folder changed but may keep its path.
-Invoke-Native $Uv @("pip", "install", "--python", $Py, "--reinstall-package", "drumcopy", "drumcopy[engine] @ $EngineUri",
-                    $Adtof, (Join-Path $Engine "vendor\beat_this"), "yt-dlp", "imageio-ffmpeg")
+# yt-dlp is brought up to date on every run (YouTube changes often); deno is the JavaScript
+# runtime it needs for YouTube's challenges, found by yt-dlp inside the environment.
+Invoke-Native $Uv @("pip", "install", "--python", $Py, "--reinstall-package", "drumcopy", "--upgrade-package", "yt-dlp",
+                    "--upgrade-package", "yt-dlp-ejs", "drumcopy[engine] @ $EngineUri", $Adtof,
+                    (Join-Path $Engine "vendor\beat_this"), "yt-dlp[default]", "deno", "imageio-ffmpeg")
 
 Write-Host "[4/5] MuseScore 4 (PDF)"
 $haveMuseScore = (Test-Path "$env:ProgramFiles\MuseScore 4\bin\MuseScore4.exe") -or $env:DRUMCOPY_MUSESCORE
@@ -91,7 +95,7 @@ if (-not $haveMuseScore -and -not $NoMuseScore) {
     $installed = $false
     if (Get-Command winget -ErrorAction SilentlyContinue) {
         try {
-            Invoke-Native "winget" @("install", "-e", "--id", "MuseScore.MuseScore", "--accept-package-agreements", "--accept-source-agreements")
+            Invoke-Native "winget" @("install", "-e", "--id", "Musescore.Musescore", "--accept-package-agreements", "--accept-source-agreements")
             $installed = $true
         } catch { Write-Host "winget could not install MuseScore 4: $($_.Exception.Message)" }
     }

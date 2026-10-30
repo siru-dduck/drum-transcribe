@@ -23,7 +23,7 @@ description: YouTube URL이나 음원 파일에서 드럼의 킥(베이스드럼
 
 샌드박스가 있는 에이전트(Codex 등)에서는 채보도 막힐 수 있다. drumcopy는 `DRUMCOPY_HOME`에 결과와 캐시를 쓰고 유튜브 음원과 모델을 내려받는데, 기본 샌드박스는 작업 폴더 밖 쓰기와 인터넷을 막는다.
 - `permission denied (os error 5)`, `Access is denied`, `PermissionError`, `Read-only file system` 같은 오류가 나면 같은 명령을 샌드박스 밖에서 실행하도록 권한 상승(승인)을 요청한다.
-- `uv trampoline failed to spawn Python child process`는 v0.2.2 이전에 설치한 Windows 엔진에서 난다(Python 본체가 AppData에 있어 샌드박스가 실행하지 못함). 사용자에게 설치 파일을 한 번 더 실행해 달라고 한다. 엔진이 `DRUMCOPY_HOME` 안의 Python으로 옮겨진다.
+- `uv trampoline failed to spawn Python child process`는 v0.2.2 이전에 설치한 Windows 엔진에서 난다(Python 본체가 AppData에 있어 샌드박스가 실행하지 못함). 사용자에게 설치 명령을 PowerShell에서 한 번 더 실행해 달라고 한다(`irm https://raw.githubusercontent.com/siru-dduck/drum-transcribe/main/install.ps1 | iex`). 엔진이 `DRUMCOPY_HOME` 안의 Python으로 옮겨진다.
 - 사용자가 매번 승인하기 번거로워하면 Codex 설정 파일(`~/.codex/config.toml`, Windows는 `%USERPROFILE%\.codex\config.toml`)에 아래를 넣고 Codex를 다시 시작하라고 안내한다. `doctor`의 `home` 값을 경로에 넣는다. 이 설정은 엔진 폴더 쓰기와 인터넷만 열고 나머지 샌드박스는 그대로 둔다.
 
   ```toml

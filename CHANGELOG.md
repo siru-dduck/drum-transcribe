@@ -1,5 +1,17 @@
 # 바뀐 내용 (Changelog)
 
+## v0.2.3
+
+- Windows에서 MuseScore 4(PDF용)가 설치되지 않던 문제를 고쳤습니다. winget 패키지 이름이 `Musescore.Musescore`인데 대소문자가 달라 찾지 못했습니다.
+- 유튜브용 JavaScript 런타임(deno)과 yt-dlp의 확인 절차 스크립트를 엔진에 함께 설치합니다. 없으면 "No supported JavaScript runtime" 경고가 나고 일부 영상을 받지 못할 수 있었습니다. 설치하거나 업데이트할 때마다 yt-dlp도 최신으로 올립니다.
+- Windows 설치 창에서 한글(사용자 이름이 든 경로)이 깨져 보이던 문제와, 필요 없는 "is not on your PATH" 경고를 없앴습니다.
+
+### English
+
+- Fixed MuseScore 4 (for the PDF) not installing on Windows: the winget package is `Musescore.Musescore`, and the case did not match.
+- The engine now comes with a JavaScript runtime for YouTube (deno) and yt-dlp's challenge scripts. Without them yt-dlp warned "No supported JavaScript runtime" and some videos could fail to download. yt-dlp is also brought up to date on every install or update.
+- Korean text (a user name in a path) no longer comes out garbled in the Windows install window, and the needless "is not on your PATH" warning is gone.
+
 ## v0.2.2
 
 - Codex(Windows)에서 채보가 시작되지 않던 문제를 고쳤습니다. uv가 Python 본체를 AppData에 두는데 Codex 샌드박스는 AppData의 프로그램을 실행하지 못해, `uv trampoline failed to spawn Python child process (os error 5)`가 났습니다. 이제 Python도 `~/.drumcopy/python`에 설치합니다. 이미 설치한 PC는 설치 명령을 한 번 더 실행하면 엔진이 옮겨집니다.

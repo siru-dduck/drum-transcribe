@@ -38,7 +38,7 @@ def musescore():
         found = shutil.which(name)
         if found:
             return found
-    raise FileNotFoundError("MuseScore 4 not found: install it (Windows: winget install MuseScore.MuseScore) "
+    raise FileNotFoundError("MuseScore 4 not found: install it (Windows: winget install -e --id Musescore.Musescore) "
                             "or set DRUMCOPY_MUSESCORE to its executable")
 
 
