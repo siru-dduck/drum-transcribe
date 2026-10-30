@@ -7,6 +7,7 @@ if (-not (Test-Path $Py)) {
     exit 2
 }
 $env:PYTHONUTF8 = "1"
+$env:DRUMCOPY_SKILL = Split-Path -Parent $PSScriptRoot   # for `drumcopy update`
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 & $Py -m drumcopy.cli @args
 exit $LASTEXITCODE

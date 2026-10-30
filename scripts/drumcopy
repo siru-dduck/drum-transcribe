@@ -15,4 +15,5 @@ if [ ! -x "$PY" ]; then
     echo '{"error": "NotInstalled", "message": "drumcopy engine not installed: run sh scripts/setup.sh"}'
     exit 2
 fi
+export DRUMCOPY_SKILL="$SKILL"   # for `drumcopy update`
 exec "$PY" -m drumcopy.cli "$@"

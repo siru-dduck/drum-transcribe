@@ -45,6 +45,10 @@ On Windows, clone it into `%USERPROFILE%\.claude\skills\drum-transcribe`. Then t
 
 Without git, download `drum-transcribe-VERSION.zip` (for example `drum-transcribe-0.1.0.zip`) from [Releases](https://github.com/siru-dduck/drum-transcribe/releases), unzip it, and put the `drum-transcribe` folder in `~/.claude/skills/` (`%USERPROFILE%\.claude\skills\` on Windows). You don't need `Source code (zip)` on the same page; GitHub adds it to every release automatically. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
+**Updates**
+
+When a new version is out, the agent tells you at the start of a new request and updates right away. It asks GitHub at most once a day, and your songs and corrections stay as they are. Say "turn off automatic updates" to be asked first, or "update drum-transcribe" to update now.
+
 **Codex and other agents**
 
 Download this folder and tell the agent to read `SKILL.md` and follow it. The skill only uses a command-line tool (`scripts/drumcopy`, or `scripts\drumcopy.ps1` on Windows).

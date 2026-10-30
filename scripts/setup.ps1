@@ -29,7 +29,8 @@ Write-Host "[3/5] engine packages (PyTorch CPU, Demucs, ADTOF, Beat This!)"
 $EngineUri = ([System.Uri]$Engine).AbsoluteUri
 # ADTOF-pytorch (drum detection) comes from its author's repository, at the commit drumcopy was tested with.
 $Adtof = "adtof-pytorch @ https://github.com/xavriley/ADTOF-pytorch/archive/85c192e78f716ea0b111cc8a5ee4a8f6a3a4f8a9.zip"
-uv pip install --python $Py "drumcopy[engine] @ $EngineUri" $Adtof (Join-Path $Engine "vendor\beat_this") yt-dlp imageio-ffmpeg
+# --reinstall-package: after an update the engine folder changed but may keep its path.
+uv pip install --python $Py --reinstall-package drumcopy "drumcopy[engine] @ $EngineUri" $Adtof (Join-Path $Engine "vendor\beat_this") yt-dlp imageio-ffmpeg
 if ($LASTEXITCODE -ne 0) { throw "package install failed" }
 
 Write-Host "[4/5] MuseScore 4 (PDF)"

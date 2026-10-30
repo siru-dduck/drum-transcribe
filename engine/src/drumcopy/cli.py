@@ -27,6 +27,10 @@
                                    folder; nothing re-transcribed
   drumcopy suggest DIR             strokes that sound like the user's confirmed corrections
   drumcopy check DIR               self-check: bars to ask the user about, with evidence
+  drumcopy update [--check [--force]] [--auto on|off]
+                                   newest GitHub release of the skill: check it (once a day), or
+                                   update the skill folder and reinstall the engine; --auto sets
+                                   whether the agent updates without asking
 """
 from __future__ import annotations
 
@@ -353,6 +357,13 @@ def cmd_doctor(args):
     return checks
 
 
+def cmd_update(args):
+    from . import update
+    if args.auto:
+        return update.set_auto(args.auto == "on")
+    return update.check(force=args.force) if args.check else update.run()
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="drumcopy", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -421,6 +432,11 @@ def main(argv=None):
     p = sub.add_parser("doctor")
     p.add_argument("--fetch-models", action="store_true", help="download the Demucs and Beat This! weights")
     p.set_defaults(func=cmd_doctor)
+    p = sub.add_parser("update")
+    p.add_argument("--check", action="store_true", help="only say whether a newer release exists")
+    p.add_argument("--force", action="store_true", help="with --check: ask GitHub now, not the last answer")
+    p.add_argument("--auto", choices=("on", "off"), help="update at the start of a request without asking")
+    p.set_defaults(func=cmd_update)
     args = parser.parse_args(argv)
     for stream in (sys.stdout, sys.stderr):  # JSON with Korean titles, also on a Windows console
         if hasattr(stream, "reconfigure"):

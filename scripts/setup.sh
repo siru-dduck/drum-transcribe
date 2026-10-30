@@ -26,7 +26,8 @@ uv python install 3.11
 echo "[3/5] engine packages (PyTorch, Demucs, ADTOF, Beat This!)"
 # ADTOF-pytorch (drum detection) comes from its author's repository, at the commit drumcopy was tested with.
 ADTOF="adtof-pytorch @ https://github.com/xavriley/ADTOF-pytorch/archive/85c192e78f716ea0b111cc8a5ee4a8f6a3a4f8a9.zip"
-uv pip install --python "$PY" "drumcopy[engine] @ file://$ENGINE" "$ADTOF" "$ENGINE/vendor/beat_this" \
+# --reinstall-package: after an update the engine folder changed but may keep its path.
+uv pip install --python "$PY" --reinstall-package drumcopy "drumcopy[engine] @ file://$ENGINE" "$ADTOF" "$ENGINE/vendor/beat_this" \
     yt-dlp imageio-ffmpeg
 
 echo "[4/5] MuseScore 4 (PDF)"

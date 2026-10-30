@@ -45,6 +45,10 @@ Windows에서는 `%USERPROFILE%\.claude\skills\drum-transcribe`에 받습니다.
 
 git이 없으면 [Releases](https://github.com/siru-dduck/drum-transcribe/releases)에서 `drum-transcribe-버전.zip`(예: `drum-transcribe-0.1.0.zip`)을 받아 압축을 풀고, 나온 `drum-transcribe` 폴더를 `~/.claude/skills/`(Windows는 `%USERPROFILE%\.claude\skills\`) 안에 넣습니다. 같은 페이지의 `Source code (zip)`은 GitHub가 자동으로 붙이는 원본 묶음이니 받지 않아도 됩니다. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
 
+**업데이트**
+
+새 버전이 나오면 에이전트가 새 요청을 시작할 때 알려 주고 바로 업데이트합니다. GitHub에는 하루에 한 번만 묻고, 곡과 교정 기록은 그대로 남습니다. 묻고 나서 바꾸게 하려면 "자동 업데이트 꺼줘", 직접 바꾸려면 "drum-transcribe 업데이트해줘"라고 말하면 됩니다.
+
 **Codex 등 다른 에이전트**
 
 이 폴더를 받아 두고, 에이전트에게 `SKILL.md`를 읽고 그대로 하라고 알려 주세요. 스킬은 명령줄 도구(`scripts/drumcopy`, Windows는 `scripts\drumcopy.ps1`)만 씁니다.

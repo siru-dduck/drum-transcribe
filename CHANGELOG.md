@@ -1,5 +1,21 @@
 # 바뀐 내용 (Changelog)
 
+## v0.2.0
+
+- 자동 업데이트: 에이전트가 새 요청을 시작할 때 새 버전을 확인하고(하루 한 번), 있으면 알린 뒤 업데이트합니다.
+  - git으로 받은 폴더는 `git pull`로, zip으로 받은 폴더는 릴리즈의 `drum-transcribe-버전.zip`으로 바꾸고, 엔진도 다시 설치합니다.
+  - 사용자가 고친 파일이 있는 git 폴더는 건드리지 않습니다. zip 설치본은 이전 폴더를 `~/.drumcopy/backups`에 남깁니다.
+  - 곡과 교정 기록은 그대로입니다. "자동 업데이트 꺼줘"라고 하면 묻고 나서 바꿉니다(`drumcopy update --auto off`).
+- 새 명령 `drumcopy update [--check] [--auto on|off]`.
+
+### English
+
+- Automatic updates: at the start of a new request the agent checks for a new version (at most once a day) and, if there is one, says so and updates.
+  - A git clone is updated with `git pull`, a zip install with the release's `drum-transcribe-VERSION.zip`; the engine is reinstalled too.
+  - A git clone with your own changes is left alone. A zip install keeps the old folder in `~/.drumcopy/backups`.
+  - Songs and corrections stay as they are. Say "turn off automatic updates" to be asked first (`drumcopy update --auto off`).
+- New command `drumcopy update [--check] [--auto on|off]`.
+
 ## v0.1.0 (2026-10-30)
 
 첫 공개 버전입니다.

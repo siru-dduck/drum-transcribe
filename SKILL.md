@@ -24,6 +24,20 @@ description: YouTube URL이나 음원 파일에서 드럼의 킥(베이스드럼
 
 설치 위치는 `DRUMCOPY_HOME`(기본 `~/.drumcopy`, Windows `%USERPROFILE%\.drumcopy`)이다. 결과물은 그 아래 `work/outputs/<곡>`에 생긴다. MuseScore가 없으면 PDF만 빠지고 MusicXML·MIDI·player.html은 만들어진다.
 
+## 업데이트 (요청을 시작할 때 확인)
+
+새 요청을 시작할 때 `doctor`보다 먼저 `update --check`를 실행한다. GitHub에는 하루에 한 번만 묻고, 인터넷이 안 되면 `error`만 담아 바로 끝난다.
+
+- `available`이 `true`이고 `auto_update`가 `true`이면 사용자에게 "drum-transcribe를 {installed}에서 {latest}로 업데이트합니다"라고 한 줄 알리고 `update`를 실행한다. 엔진을 다시 설치하느라 1~3분 걸릴 수 있다.
+  - 끝나면 결과의 `read_again`대로 이 SKILL.md를 다시 읽고, 바뀐 지시에 따라 요청을 진행한다.
+  - `setup.ok`가 `false`이면 `log` 경로를 알려 주고 위 준비 절의 설치 스크립트를 다시 실행한다.
+- `auto_update`가 `false`이면 새 버전이 있다고 알리고, 업데이트할지 사용자에게 묻는다.
+- `install`이 `dev`(개발용 폴더)이거나 `error`가 있으면 아무것도 하지 않고 요청을 진행한다.
+- 작업 도중(채보 중, 편집 화면이 떠 있을 때)에는 업데이트하지 않는다. 다음 요청을 시작할 때 한다.
+- 사용자가 "업데이트해줘"라고 하면 `update`를 실행한다. "자동 업데이트 꺼줘"라고 하면 `update --auto off`를, 다시 켜 달라고 하면 `update --auto on`을 실행한다.
+- git으로 받은 폴더는 `git pull`로 바꾼다. 사용자가 고친 파일이 있으면 바꾸지 않고 알린다. zip으로 받은 폴더는 이전 파일을 `DRUMCOPY_HOME/backups`에 최근 3개까지 남긴다.
+- 곡, 교정(`feedback.json`), 모델 가중치는 `DRUMCOPY_HOME`에 있어 업데이트해도 그대로다.
+
 ## 도구 (CLI만 쓴다)
 
 CLI는 이 스킬 폴더의 `scripts/drumcopy`(Windows `scripts\drumcopy.ps1`)에 아래 표의 명령을 붙여 실행한다. MCP 서버는 쓰지 않는다(도구 설명이 매 대화에 실려 토큰만 늘고, 기능은 CLI와 같다). **모든 채보에 `--parts kick,snare`를 반드시 넣는다.** 이 값은 `report.json`에 저장되어 이후 `renotate`에도 유지된다.
@@ -48,6 +62,7 @@ CLI는 이 스킬 폴더의 `scripts/drumcopy`(Windows `scripts\drumcopy.ps1`)�
 | 비슷한 소리 제안(곡 적응) | `drumcopy suggest DIR` |
 | 다른 악보 프로그램용 파일 모으기 | `drumcopy export DIR [DIR ...] [--format mxl\|mscz\|pdf\|mid\|musicxml] [--to 폴더] [--name 이름 ...] [--open]` (기본 .mxl, 이름을 안 주면 곡 제목) |
 | 설치 점검 | `drumcopy doctor [--fetch-models]` |
+| 새 버전 확인·업데이트 | `drumcopy update --check` / `drumcopy update` / `drumcopy update --auto on\|off` |
 
 모든 CLI 명령은 JSON 한 개를 출력한다. 첫 채보는 1~3분, 같은 음원의 재실행은 수 초가 걸린다. 임계값 순서는 킥, 스네어, 탐, 하이햇, 심벌이며, 1차 스킬에서는 앞의 두 값만 의미가 있다.
 
