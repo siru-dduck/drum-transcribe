@@ -1,5 +1,17 @@
 # 바뀐 내용 (Changelog)
 
+## v0.2.4
+
+- 업데이트 확인이 Codex 샌드박스 안에서 실패하던 문제를 고쳤습니다. 확인 결과를 `~/.drumcopy`에 저장하지 못하면 확인 전체가 실패했습니다. 이제 저장하지 못해도 결과를 알려 줍니다. GitHub 접속이 막히면 샌드박스 밖에서 한 번 확인하라는 안내를 붙입니다.
+- GitHub에 접속할 때 운영체제 인증서 대신 엔진에 함께 설치된 certifi 인증서를 씁니다. 샌드박스 안에서 운영체제 인증서를 읽지 못하는 경우에 대비한 것입니다.
+- Windows에서 사용자 이름이 한글이면 설치 명령을 실행할 때마다 가상 환경을 다시 만들던 문제를 고쳤습니다. Windows PowerShell 5.1이 UTF-8 설정 파일을 다른 인코딩으로 읽었습니다.
+
+### English
+
+- Fixed the update check failing inside Codex's sandbox: when it could not save its answer in `~/.drumcopy`, the whole check failed. It now answers anyway, and when GitHub is out of reach it adds a hint to check once outside the sandbox.
+- GitHub is reached with certifi's certificates, installed with the engine, instead of the operating system's store, which a sandbox may not let it read.
+- Fixed the virtual environment being rebuilt on every install run on Windows when the user name is Korean: Windows PowerShell 5.1 read a UTF-8 settings file in another encoding.
+
 ## v0.2.3
 
 - Windows에서 MuseScore 4(PDF용)가 설치되지 않던 문제를 고쳤습니다. winget 패키지 이름이 `Musescore.Musescore`인데 대소문자가 달라 찾지 못했습니다.

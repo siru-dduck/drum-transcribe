@@ -13,7 +13,8 @@ is never touched.
   set_auto()  whether the agent updates at the start of a request without asking (default on)
 
 Songs, corrections and model weights live in DRUMCOPY_HOME, outside the skill folder, so an
-update never touches them.
+update never touches them. Inside an agent's sandbox (Codex) the check may not reach GitHub or
+save its answer; it still answers, with a hint to run it outside the sandbox.
 """
 from __future__ import annotations
 
@@ -21,6 +22,7 @@ import json
 import os
 import re
 import shutil
+import ssl
 import subprocess
 import tempfile
 import time
@@ -36,6 +38,19 @@ STATE = paths.HOME / "work/update.json"   # the last check and the auto-update c
 BACKUPS = paths.HOME / "backups"
 LOGS = paths.HOME / "work/logs"
 KEEP = 3                                   # backups kept
+BLOCKED = ("Permission", "denied", "Errno 13", "WinError 5", "10013", "SSL", "CERTIFICATE", "Connection refused",
+           "unreachable", "getaddrinfo", "Name or service", "timed out")   # what a sandbox block looks like
+
+
+def _open(request, timeout):
+    """urlopen with certifi's certificates when installed (the engine has them): inside a
+    sandbox the operating system's certificate store may be out of reach."""
+    try:
+        import certifi
+        context = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        context = None
+    return urllib.request.urlopen(request, timeout=timeout, context=context)
 
 
 def skill_dir():
@@ -74,7 +89,7 @@ def latest(repo, timeout=5):
     """The newest published release: its version, the package to download and its page."""
     request = urllib.request.Request(API.format(repo=repo), headers={
         "Accept": "application/vnd.github+json", "User-Agent": "drumcopy-update"})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    with _open(request, timeout) as response:
         release = json.load(response)
     version = release["tag_name"].lstrip("vV")
     assets = {a["name"]: a["browser_download_url"] for a in release.get("assets", [])}
@@ -92,14 +107,20 @@ def _state():
 
 
 def _save(state):
-    STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps(state, indent=1, ensure_ascii=False), encoding="utf-8")
+    """Remember the answer; a sandbox that cannot write here only costs asking again."""
+    try:
+        STATE.parent.mkdir(parents=True, exist_ok=True)
+        STATE.write_text(json.dumps(state, indent=1, ensure_ascii=False), encoding="utf-8")
+        return True
+    except OSError:
+        return False
 
 
 def set_auto(on):
     state = _state()
     state["auto"] = bool(on)
-    _save(state)
+    if not _save(state):
+        raise PermissionError(f"cannot write {STATE}: run this outside the agent's sandbox")
     return {"auto_update": state["auto"]}
 
 
@@ -126,6 +147,9 @@ def check(force=False):
         _save(state)
     if seen.get("error"):
         info.update(available=False, error=seen["error"])
+        if any(word.lower() in seen["error"].lower() for word in BLOCKED):
+            info["hint"] = ("GitHub could not be reached from here, perhaps the agent's sandbox: run "
+                            "`update --check --force` once outside it (the answer is kept for a day)")
         return info
     info.update(latest=seen["version"], available=newer(seen["version"], installed), page=seen["page"],
                 notes=seen["notes"], download=seen["zip"])
@@ -171,7 +195,7 @@ def _unpack(url, work):
     """Download the release zip into work and return the skill folder inside it."""
     archive = work / "release.zip"
     request = urllib.request.Request(url, headers={"User-Agent": "drumcopy-update"})
-    with urllib.request.urlopen(request, timeout=120) as response, open(archive, "wb") as out:
+    with _open(request, 120) as response, open(archive, "wb") as out:
         shutil.copyfileobj(response, out)
     with zipfile.ZipFile(archive) as package:
         for item in package.infolist():

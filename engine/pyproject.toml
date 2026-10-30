@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "drumcopy"
-version = "0.2.3"
+version = "0.2.4"
 description = "Audio (YouTube, files) to standard drum notation, built for AI agents"
 requires-python = ">=3.11,<3.12"
 dependencies = [

@@ -72,7 +72,9 @@ $env:UV_PYTHON_BIN_DIR = Join-Path $PythonDir "bin"
 $env:UV_PYTHON_INSTALL_BIN = "0"  # no python3.11.exe on PATH: the engine does not need one
 Invoke-Native $Uv @("python", "install", "3.11")
 $cfg = Join-Path $Venv "pyvenv.cfg"
-if ((Test-Path $cfg) -and -not ((Get-Content $cfg) -match [regex]::Escape($PythonDir))) {
+# -Encoding UTF8: uv writes the file in UTF-8, and Windows PowerShell 5.1 would read it in the
+# ANSI code page, garbling a Korean user name so that every run rebuilt the environment.
+if ((Test-Path $cfg) -and -not ((Get-Content $cfg -Encoding UTF8) -match [regex]::Escape($PythonDir))) {
     Write-Host "Moving the engine onto the Python in $PythonDir (packages come again from uv's cache)"
     Remove-Item $Venv -Recurse -Force
 }
